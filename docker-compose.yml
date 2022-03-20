@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  analyzer:
+    build: ./
+    env_file:
+      - ./config/.env
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: 'mongo'
+    restart: unless-stopped
+    volumes:
+      - ./data:/data/db
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - ./config/.env
