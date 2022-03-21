@@ -1,7 +1,8 @@
-package models
+package filter
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
+// DB model that holds precompiled filters for each stock
 type Filter struct {
 	ID      primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	StockId primitive.ObjectID `bson:"_stock_id" json:"stock_id,omitempty"`
