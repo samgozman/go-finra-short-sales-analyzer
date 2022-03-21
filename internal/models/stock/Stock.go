@@ -14,13 +14,13 @@ type Stock struct {
 	ShortVolRatio20DAVG       float64 `json:"shortVolRatio20DAVG"`
 	ShortExemptVolRatio20DAVG float64 `json:"shortExemptVolRatio20DAVG"`
 
-	ShortExemptVolLast   uint64 `json:"shortExemptVolLast"`
-	ShortExemptVol5DAVG  uint64 `json:"shortExemptVol5DAVG"`
-	ShortExemptVol20DAVG uint64 `json:"shortExemptVol20DAVG"`
-	ShortVolLast         uint64 `json:"shortVolLast"`
-	ShortVol5DAVG        uint64 `json:"shortVol5DAVG"`
-	ShortVol20DAVG       uint64 `json:"shortVol20DAVG"`
-	TotalVolLast         uint64 `json:"totalVolLast"`
-	TotalVol5DAVG        uint64 `json:"totalVol5DAVG"`
-	TotalVol20DAVG       uint64 `json:"totalVol20DAVG"`
+	ShortExemptVolLast   float64 `json:"shortExemptVolLast"`
+	ShortExemptVol5DAVG  float64 `json:"shortExemptVol5DAVG"`
+	ShortExemptVol20DAVG float64 `json:"shortExemptVol20DAVG"`
+	ShortVolLast         float64 `json:"shortVolLast"`
+	ShortVol5DAVG        float64 `json:"shortVol5DAVG"`
+	ShortVol20DAVG       float64 `json:"shortVol20DAVG"`
+	TotalVolLast         float64 `json:"totalVolLast"`
+	TotalVol5DAVG        float64 `json:"totalVol5DAVG"`
+	TotalVol20DAVG       float64 `json:"totalVol20DAVG"`
 }
