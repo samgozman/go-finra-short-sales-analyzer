@@ -2,8 +2,10 @@ package stock
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/volume"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -50,13 +52,46 @@ func CalculateAverages(ctx context.Context, db *mongo.Database, stocks *[]Stock)
 			temp.ShortExemptVolRatio20DAVG = (e20 / t20) * 100
 		}
 
-		// Store
+		// TODO: Find a way to update all stocks with one pack insert (all at the same time)
+		// Update in db
+		UpdateOne(ctx, db, temp)
+		// Store results in memory for future usage
 		s = temp
 	}
 }
 
-func UpdateMany(s []*Stock) {
-	// Update many in DB
+func UpdateOne(ctx context.Context, db *mongo.Database, s Stock) {
+	update := bson.M{
+		"$set": bson.M{
+			"shortVolRatioLast":         s.ShortVolRatioLast,
+			"shortExemptVolRatioLast":   s.ShortExemptVolRatioLast,
+			"shortVolRatio5DAVG":        s.ShortVolRatio5DAVG,
+			"shortExemptVolRatio5DAVG":  s.ShortExemptVolRatio5DAVG,
+			"shortVolRatio20DAVG":       s.ShortVolRatio20DAVG,
+			"shortExemptVolRatio20DAVG": s.ShortExemptVolRatio20DAVG,
+
+			"shortExemptVolLast":   s.ShortExemptVolLast,
+			"shortExemptVol5DAVG":  s.ShortExemptVol5DAVG,
+			"shortExemptVol20DAVG": s.ShortExemptVol20DAVG,
+			"shortVolLast":         s.ShortVolLast,
+			"shortVol5DAVG":        s.ShortVol5DAVG,
+			"shortVol20DAVG":       s.ShortVol20DAVG,
+			"totalVolLast":         s.TotalVolLast,
+			"totalVol5DAVG":        s.TotalVol5DAVG,
+			"totalVol20DAVG":       s.TotalVol20DAVG,
+		},
+	}
+
+	_, err := db.Collection("stocks").UpdateOne(
+		ctx,
+		bson.M{"_id": s.ID},
+		update,
+	)
+
+	if err != nil {
+		fmt.Printf("Error while updating stock %s\n", s.Ticker)
+		panic(err)
+	}
 }
 
 // Calculate average volumes for a slice
