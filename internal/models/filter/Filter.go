@@ -4,8 +4,8 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 // DB model that holds precompiled filters for each stock
 type Filter struct {
-	ID      primitive.ObjectID `bson:"_id" json:"id,omitempty"`
-	StockId primitive.ObjectID `bson:"_stock_id" json:"stock_id,omitempty"`
+	ID      primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	StockId primitive.ObjectID `bson:"_stock_id,omitempty" json:"stock_id"`
 
 	OnTinkoff    bool `json:"onTinkoff"`    // Stock is available on Tinkoff broker
 	IsNotGarbage bool `json:"isNotGarbage"` // Filter new stocks with no data or incomplete
