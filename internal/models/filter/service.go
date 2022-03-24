@@ -25,7 +25,7 @@ func InsertMany(ctx context.Context, db *mongo.Database, filters *[]Filter) {
 	// Convert struct into interface
 	var fi []interface{}
 	for _, f := range *filters {
-		fi = append(fi, &f)
+		fi = append(fi, f)
 	}
 
 	_, err := db.Collection("filters").InsertMany(ctx, fi)
