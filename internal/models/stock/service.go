@@ -12,7 +12,7 @@ import (
 // Calculate average volumes for array of Stock instances
 func CalculateAverages(ctx context.Context, db *mongo.Database, stocks *[]Stock) {
 	// Get last date from volume service
-	lastRecordTime := volume.LastDateTime(ctx, db)
+	lastRecordTime := volume.LastRecordTime(ctx, db)
 
 	for _, s := range *stocks {
 		v := volume.FindLastVolumes(ctx, db, s.ID, 20)

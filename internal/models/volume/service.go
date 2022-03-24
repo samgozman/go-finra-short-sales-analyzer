@@ -11,7 +11,7 @@ import (
 )
 
 // Get number (ms) of the last trading day
-func LastDateTime(ctx context.Context, db *mongo.Database) (m int64) {
+func LastRecordTime(ctx context.Context, db *mongo.Database) (m int64) {
 	// Get latest volume
 	findOptions := options.FindOne()
 	findOptions.SetSort(bson.D{{"date", -1}})
