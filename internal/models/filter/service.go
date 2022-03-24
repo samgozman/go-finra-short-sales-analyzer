@@ -35,9 +35,6 @@ func InsertMany(ctx context.Context, db *mongo.Database, filters *[]Filter) {
 	}
 }
 
-//analyzer_1  | Iteration 15821
-// analyzer_1  | Iteration 15822
-
 // FILTERS
 // ? Create filter for each stock
 
