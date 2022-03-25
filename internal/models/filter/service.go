@@ -33,6 +33,8 @@ func InsertMany(ctx context.Context, db *mongo.Database, filters *[]Filter) {
 		fmt.Println("Error while trying to insert new filters")
 		panic(err)
 	}
+
+	fmt.Println("Filters successfully updated!")
 }
 
 // FILTERS
@@ -43,12 +45,15 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 	lrt := volume.LastRecordTime(ctx, db)
 
 	for _, s := range *stocks {
+		// TODO: Ja-ja, giant N+1
+		volumes := volume.FindLastVolumes(ctx, db, s.ID, 20)
+
 		f := Filter{
 			ID:      primitive.NewObjectID(),
 			StockId: s.ID,
 
 			OnTinkoff:    false, // TODO
-			IsNotGarbage: isNotGarbageFilter(ctx, db, lrt, s.ID),
+			IsNotGarbage: isNotGarbageFilter(lrt, &volumes),
 		}
 
 		filters = append(filters, f)
@@ -57,21 +62,19 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 	return filters
 }
 
-func isNotGarbageFilter(ctx context.Context, db *mongo.Database, lrt int64, stockId primitive.ObjectID) bool {
-	volumes := volume.FindLastVolumes(ctx, db, stockId, 5)
-
+func isNotGarbageFilter(lrt int64, volumes *[]volume.Volume) bool {
 	var isConsistent bool = true
 	var averageIsAboveMinimum bool = false
 
-	if len(volumes) == 5 && volumes[0].Date.UnixMilli() == lrt {
+	if len(*volumes) >= 5 && (*volumes)[0].Date.UnixMilli() == lrt {
 		var total uint64
 
-		for _, v := range volumes {
+		for i := 0; i < 5; i++ {
 			// Check if the volume is not filled up
-			if v.TotalVolume == 0 {
+			if (*volumes)[i].TotalVolume == 0 {
 				isConsistent = false
 			}
-			total += v.TotalVolume
+			total += (*volumes)[i].TotalVolume
 		}
 
 		averageIsAboveMinimum = total/5 >= 5000
