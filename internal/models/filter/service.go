@@ -57,10 +57,38 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 			OnTinkoff:    false, // TODO
 			IsNotGarbage: isNotGarbageFilter(lrt, currentLatestRecord, &sv.TotalVolume),
 
-			ShortVolGrows5D:     isVolumeGrows(&sv.ShortVolume, 5),
-			ShortVolDecreases5D: isVolumeDecreases(&sv.ShortVolume, 5),
+			// TODO: Refactor idea - return number of grow days in a row and compare it with 5
+			ShortVolGrows5D:                isVolumeGrows(&sv.ShortVolume, 5),
+			ShortVolDecreases5D:            isVolumeDecreases(&sv.ShortVolume, 5),
+			ShortVolRatioGrows5D:           isRatioGrows(&sv.ShortRatio, 5),
+			ShortVoRatiolDecreases5D:       isRatioDecreases(&sv.ShortRatio, 5),
+			TotalVolGrows5D:                isVolumeGrows(&sv.TotalVolume, 5),
+			TotalVolDecreases5D:            isVolumeDecreases(&sv.TotalVolume, 5),
+			ShortExemptVolGrows5D:          isVolumeGrows(&sv.ShortExemptVolume, 5),
+			ShortExemptVolDecreases5D:      isVolumeDecreases(&sv.ShortExemptVolume, 5),
+			ShortExemptVolRatioGrows5D:     isRatioGrows(&sv.ExemptRatio, 5),
+			ShortExemptVolRatioDecreases5D: isRatioDecreases(&sv.ExemptRatio, 5),
+
+			ShortVolGrows3D:                isVolumeGrows(&sv.ShortVolume, 3),
+			ShortVolDecreases3D:            isVolumeDecreases(&sv.ShortVolume, 3),
+			ShortVolRatioGrows3D:           isRatioGrows(&sv.ShortRatio, 3),
+			ShortVoRatiolDecreases3D:       isRatioDecreases(&sv.ShortRatio, 3),
+			TotalVolGrows3D:                isVolumeGrows(&sv.TotalVolume, 3),
+			TotalVolDecreases3D:            isVolumeDecreases(&sv.TotalVolume, 3),
+			ShortExemptVolGrows3D:          isVolumeGrows(&sv.ShortExemptVolume, 3),
+			ShortExemptVolDecreases3D:      isVolumeDecreases(&sv.ShortExemptVolume, 3),
+			ShortExemptVolRatioGrows3D:     isRatioGrows(&sv.ExemptRatio, 3),
+			ShortExemptVolRatioDecreases3D: isRatioDecreases(&sv.ExemptRatio, 3),
+
+			// AbnormalShortlVolGrows
+			// AbnormalShortVolDecreases
+			// AbnormalTotalVolGrows
+			// AbnormalTotalVolDecreases
+			// AbnormalShortExemptVolGrows
+			// AbnormalShortExemptVolDecreases
 		}
 
+		fmt.Println(f)
 		filters = append(filters, f)
 	}
 
