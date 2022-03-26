@@ -46,7 +46,7 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 
 	for _, s := range *stocks {
 		// TODO: Ja-ja, giant N+1
-		volumes := volume.FindLastVolumes(ctx, db, s.ID, 20)
+		volumes := volume.FindLastVolumes(ctx, db, s.ID, 5)
 		currentLatestRecord := volumes[0].Date.UnixMilli()
 		sv := volume.SeparateVolumes(&volumes)
 
