@@ -88,7 +88,6 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 			AbnormalShortExemptVolDecreases: isAbnormaDecline(s.ShortExemptVol20DAVG, s.ShortExemptVolLast),
 		}
 
-		fmt.Println(f)
 		filters = append(filters, f)
 	}
 

@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// ! 2. Calculate averages and save them in stocks array by pointer, update in db
-	// stock.CalculateAverages(ctx, database, &stArr)
+	stock.CalculateAverages(ctx, database, &stArr)
 	// ! 3. Drop filters collection
 	filter.Drop(ctx, database)
 	// ! 4. Pass pointer to a stocks to each filter
@@ -49,7 +49,4 @@ func main() {
 	// Release resource when the main
 	// function is returned.
 	defer mongodb.Close(client, ctx, cancel)
-
-	// Ping mongoDB with Ping method
-	mongodb.Ping(client, ctx)
 }
