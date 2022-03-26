@@ -56,6 +56,9 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 
 			OnTinkoff:    false, // TODO
 			IsNotGarbage: isNotGarbageFilter(lrt, currentLatestRecord, &sv.TotalVolume),
+
+			ShortVolGrows5D:     isVolumeGrows(&sv.ShortVolume, 5),
+			ShortVolDecreases5D: isVolumeDecreases(&sv.ShortVolume, 5),
 		}
 
 		filters = append(filters, f)
@@ -87,4 +90,39 @@ func isNotGarbageFilter(lastRecordTime int64, curentRecordTime int64, totalVolum
 	} else {
 		return false
 	}
+}
+
+// ?: This copy-paste is to make code simpler
+// TODO: find a better way (without 10x nested if-statements)
+
+func isVolumeGrows(volumes *[]uint64, daysGrow int) bool {
+	if len(*volumes) <= daysGrow {
+		return false
+	}
+
+	// ! Check volumes with Date - do we need to reverse the order before?
+	for i := 1; i < daysGrow+1; i++ {
+		isGreaterThanPrev := (*volumes)[i] > (*volumes)[i-1]
+		if !isGreaterThanPrev {
+			return false
+		}
+	}
+
+	return true
+}
+
+func isVolumeDecreases(volumes *[]uint64, daysGrow int) bool {
+	if len(*volumes) <= daysGrow {
+		return false
+	}
+
+	// ! Check volumes with Date - do we need to reverse the order before?
+	for i := 1; i < daysGrow+1; i++ {
+		isLesserThanPrev := (*volumes)[i] < (*volumes)[i-1]
+		if !isLesserThanPrev {
+			return false
+		}
+	}
+
+	return true
 }

@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/filter"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/stock"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
@@ -37,10 +38,13 @@ func main() {
 	}
 
 	// ! 2. Calculate averages and save them in stocks array by pointer, update in db
-	stock.CalculateAverages(ctx, database, &stArr)
+	// stock.CalculateAverages(ctx, database, &stArr)
 	// ! 3. Drop filters collection
+	filter.Drop(ctx, database)
 	// ! 4. Pass pointer to a stocks to each filter
+	filters := filter.CreateMany(ctx, database, &stArr)
 	// ! 5. Save each filter individually (1 insert transaction for all stocks in 1 filter)
+	filter.InsertMany(ctx, database, &filters)
 
 	// Release resource when the main
 	// function is returned.
