@@ -131,7 +131,6 @@ func isVolumeGrows(volumes *[]uint64, daysGrow int) bool {
 		return false
 	}
 
-	// ! Check volumes with Date - do we need to reverse the order before?
 	for i := 1; i < daysGrow+1; i++ {
 		isGreaterThanPrev := (*volumes)[i] > (*volumes)[i-1]
 		if !isGreaterThanPrev {
@@ -147,7 +146,6 @@ func isVolumeDecreases(volumes *[]uint64, daysGrow int) bool {
 		return false
 	}
 
-	// ! Check volumes with Date - do we need to reverse the order before?
 	for i := 1; i < daysGrow+1; i++ {
 		isLesserThanPrev := (*volumes)[i] < (*volumes)[i-1]
 		if !isLesserThanPrev {
@@ -164,7 +162,6 @@ func isRatioGrows(volumes *[]float32, daysGrow int) bool {
 		return false
 	}
 
-	// ! Check volumes with Date - do we need to reverse the order before?
 	for i := 1; i < daysGrow+1; i++ {
 		isGreaterThanPrev := (*volumes)[i] > (*volumes)[i-1]
 		if !isGreaterThanPrev {
@@ -181,7 +178,6 @@ func isRatioDecreases(volumes *[]float32, daysGrow int) bool {
 		return false
 	}
 
-	// ! Check volumes with Date - do we need to reverse the order before?
 	for i := 1; i < daysGrow+1; i++ {
 		isLesserThanPrev := (*volumes)[i] < (*volumes)[i-1]
 		if !isLesserThanPrev {
