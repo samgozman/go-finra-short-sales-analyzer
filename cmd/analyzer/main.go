@@ -11,6 +11,7 @@ import (
 // TODO: Create e2e test for `/run`
 // TODO: More error checks
 // TODO: Logger with timestamps
+// TODO: Provide more logging information (log on each stage)
 // TODO: Use "generics" from go 1.18
 // TODO: Add benchmark
 // TODO: Optimize inner functions
