@@ -2,7 +2,6 @@ package volume
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -58,8 +57,6 @@ func SeparateVolumes(volumes *[]Volume) VolumesSeparated {
 
 		shortRatio = append(shortRatio, float32(v.ShortVolume)/float32(v.TotalVolume))
 		exemptRatio = append(exemptRatio, float32(v.ShortExemptVolume)/float32(v.TotalVolume))
-
-		fmt.Println(v.StockId, v.Date)
 	}
 
 	res := VolumesSeparated{
