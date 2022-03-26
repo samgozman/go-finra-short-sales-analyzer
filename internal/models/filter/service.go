@@ -94,6 +94,7 @@ func isNotGarbageFilter(lastRecordTime int64, curentRecordTime int64, totalVolum
 
 // ?: This copy-paste is to make code simpler
 // TODO: find a better way (without 10x nested if-statements)
+// TODO: use generic type (1.18) for volumes
 
 func isVolumeGrows(volumes *[]uint64, daysGrow int) bool {
 	if len(*volumes) <= daysGrow {
@@ -112,6 +113,40 @@ func isVolumeGrows(volumes *[]uint64, daysGrow int) bool {
 }
 
 func isVolumeDecreases(volumes *[]uint64, daysGrow int) bool {
+	if len(*volumes) <= daysGrow {
+		return false
+	}
+
+	// ! Check volumes with Date - do we need to reverse the order before?
+	for i := 1; i < daysGrow+1; i++ {
+		isLesserThanPrev := (*volumes)[i] < (*volumes)[i-1]
+		if !isLesserThanPrev {
+			return false
+		}
+	}
+
+	return true
+}
+
+// TODO: Replace with generic type. Move this code to pkg
+func isRatioGrows(volumes *[]float32, daysGrow int) bool {
+	if len(*volumes) <= daysGrow {
+		return false
+	}
+
+	// ! Check volumes with Date - do we need to reverse the order before?
+	for i := 1; i < daysGrow+1; i++ {
+		isGreaterThanPrev := (*volumes)[i] > (*volumes)[i-1]
+		if !isGreaterThanPrev {
+			return false
+		}
+	}
+
+	return true
+}
+
+// TODO: Replace with generic type. Move this code to pkg
+func isRatioDecreases(volumes *[]float32, daysGrow int) bool {
 	if len(*volumes) <= daysGrow {
 		return false
 	}
