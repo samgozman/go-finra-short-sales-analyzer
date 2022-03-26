@@ -47,13 +47,15 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 	for _, s := range *stocks {
 		// TODO: Ja-ja, giant N+1
 		volumes := volume.FindLastVolumes(ctx, db, s.ID, 20)
+		currentLatestRecord := volumes[0].Date.UnixMilli()
+		sv := volume.SeparateVolumes(&volumes)
 
 		f := Filter{
 			ID:      primitive.NewObjectID(),
 			StockId: s.ID,
 
 			OnTinkoff:    false, // TODO
-			IsNotGarbage: isNotGarbageFilter(lrt, &volumes),
+			IsNotGarbage: isNotGarbageFilter(lrt, currentLatestRecord, &sv.TotalVolume),
 		}
 
 		filters = append(filters, f)
@@ -62,19 +64,19 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 	return filters
 }
 
-func isNotGarbageFilter(lrt int64, volumes *[]volume.Volume) bool {
+func isNotGarbageFilter(lastRecordTime int64, curentRecordTime int64, totalVolumes *[]uint64) bool {
 	var isConsistent bool = true
 	var averageIsAboveMinimum bool = false
 
-	if len(*volumes) >= 5 && (*volumes)[0].Date.UnixMilli() == lrt {
+	if len(*totalVolumes) >= 5 && curentRecordTime == lastRecordTime {
 		var total uint64
 
 		for i := 0; i < 5; i++ {
 			// Check if the volume is not filled up
-			if (*volumes)[i].TotalVolume == 0 {
+			if (*totalVolumes)[i] == 0 {
 				isConsistent = false
 			}
-			total += (*volumes)[i].TotalVolume
+			total += (*totalVolumes)[i]
 		}
 
 		averageIsAboveMinimum = total/5 >= 5000

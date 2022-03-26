@@ -15,3 +15,12 @@ type Volume struct {
 	ShortExemptVolume uint64             `json:"shortExemptVolume"`
 	TotalVolume       uint64             `json:"totalVolume"`
 }
+
+// List of volumes data usabale in filter conditions
+type VolumesSeparated struct {
+	ShortVolume       []uint64
+	ShortExemptVolume []uint64
+	TotalVolume       []uint64
+	ShortRatio        []float32 // Array of short volumes divided by total volume
+	ExemptRatio       []float32 // Array of short exempt volumes divided by total volume
+}

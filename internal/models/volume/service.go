@@ -41,3 +41,31 @@ func FindLastVolumes(ctx context.Context, db *mongo.Database, stockId primitive.
 
 	return volumes
 }
+
+// Returns 3 arrays of volumes different types and 2 ratios from one volumes array
+func SeparateVolumes(volumes *[]Volume) VolumesSeparated {
+	var totalVolume []uint64
+	var shortVolume []uint64
+	var exemptVolume []uint64
+	var shortRatio []float32
+	var exemptRatio []float32
+
+	for _, v := range *volumes {
+		totalVolume = append(totalVolume, v.TotalVolume)
+		shortVolume = append(shortVolume, v.ShortVolume)
+		exemptVolume = append(exemptVolume, v.ShortExemptVolume)
+
+		shortRatio = append(shortRatio, float32(v.ShortVolume)/float32(v.TotalVolume))
+		exemptRatio = append(exemptRatio, float32(v.ShortExemptVolume)/float32(v.TotalVolume))
+	}
+
+	res := VolumesSeparated{
+		TotalVolume:       totalVolume,
+		ShortVolume:       shortVolume,
+		ShortExemptVolume: exemptVolume,
+		ShortRatio:        shortRatio,
+		ExemptRatio:       exemptRatio,
+	}
+
+	return res
+}
