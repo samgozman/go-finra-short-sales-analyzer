@@ -7,6 +7,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// TODO: Create tests for all methods
+// TODO: Create e2e test for `/run`
+// TODO: More error checks
+// TODO: Logger with timestamps
+// TODO: Use "generics" from go 1.18
+// TODO: Add benchmark
+// TODO: Optimize inner functions
+// TODO: Connect as a service for tightshorts
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/run", runAnalyzerHandler)
