@@ -80,12 +80,12 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 			ShortExemptVolRatioGrows3D:     isRatioGrows(&sv.ExemptRatio, 3),
 			ShortExemptVolRatioDecreases3D: isRatioDecreases(&sv.ExemptRatio, 3),
 
-			// AbnormalShortlVolGrows
-			// AbnormalShortVolDecreases
-			// AbnormalTotalVolGrows
-			// AbnormalTotalVolDecreases
-			// AbnormalShortExemptVolGrows
-			// AbnormalShortExemptVolDecreases
+			AbnormalShortlVolGrows:          isAbnormalGrowth(s.ShortVol20DAVG, s.ShortVolLast),
+			AbnormalShortVolDecreases:       isAbnormaDecline(s.ShortVol20DAVG, s.ShortVolLast),
+			AbnormalTotalVolGrows:           isAbnormalGrowth(s.TotalVol20DAVG, s.TotalVolLast),
+			AbnormalTotalVolDecreases:       isAbnormaDecline(s.TotalVol20DAVG, s.TotalVolLast),
+			AbnormalShortExemptVolGrows:     isAbnormalGrowth(s.ShortExemptVol20DAVG, s.ShortExemptVolLast),
+			AbnormalShortExemptVolDecreases: isAbnormaDecline(s.ShortExemptVol20DAVG, s.ShortExemptVolLast),
 		}
 
 		fmt.Println(f)
@@ -188,4 +188,26 @@ func isRatioDecreases(volumes *[]float32, daysGrow int) bool {
 	}
 
 	return true
+}
+
+// Abnormal volume => more than triple the 20d average
+func isAbnormalGrowth(average float64, current uint64) bool {
+	multiplier := float64(current) / average
+
+	if multiplier >= 3 {
+		return true
+	} else {
+		return false
+	}
+}
+
+// Abnormal volume => more than triple the 20d average
+func isAbnormaDecline(average float64, current uint64) bool {
+	multiplier := average / float64(current)
+
+	if multiplier >= 3 {
+		return true
+	} else {
+		return false
+	}
 }
