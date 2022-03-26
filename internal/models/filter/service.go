@@ -48,6 +48,9 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 		// TODO: Ja-ja, giant N+1
 		volumes := volume.FindLastVolumes(ctx, db, s.ID, 5)
 		currentLatestRecord := volumes[0].Date.UnixMilli()
+
+		// Reverse volumes for filters usage
+		volumes = volume.Reverse(&volumes)
 		sv := volume.SeparateVolumes(&volumes)
 
 		f := Filter{

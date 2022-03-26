@@ -2,6 +2,7 @@ package volume
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -57,6 +58,8 @@ func SeparateVolumes(volumes *[]Volume) VolumesSeparated {
 
 		shortRatio = append(shortRatio, float32(v.ShortVolume)/float32(v.TotalVolume))
 		exemptRatio = append(exemptRatio, float32(v.ShortExemptVolume)/float32(v.TotalVolume))
+
+		fmt.Println(v.StockId, v.Date)
 	}
 
 	res := VolumesSeparated{
@@ -68,4 +71,13 @@ func SeparateVolumes(volumes *[]Volume) VolumesSeparated {
 	}
 
 	return res
+}
+
+// Reverse array of Volumes
+func Reverse(volumes *[]Volume) []Volume {
+	ra := make([]Volume, 0, len(*volumes))
+	for i := len(*volumes) - 1; i >= 0; i-- {
+		ra = append(ra, (*volumes)[i])
+	}
+	return ra
 }
