@@ -2,10 +2,10 @@ package filter
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/stock"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/volume"
+	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/logger"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -14,13 +14,16 @@ func Drop(ctx context.Context, db *mongo.Database) {
 	err := db.Collection("filters").Drop(ctx)
 
 	if err != nil {
-		fmt.Println("Error while trying to drop Filters collection")
+		logger.Error("Drop", "Error while trying to drop Filters collection")
 		panic(err)
 	}
 }
 
 // Insert array of Filters entities into Collection
 func InsertMany(ctx context.Context, db *mongo.Database, filters *[]Filter) {
+	logger.Info("InsertMany", "Updating filters process started")
+	defer logger.Info("InsertMany", "Updating filters process finished")
+
 	// TODO: Find a way to create interface[] of filters from the start
 	// Convert struct into interface
 	var fi []interface{}
@@ -30,17 +33,18 @@ func InsertMany(ctx context.Context, db *mongo.Database, filters *[]Filter) {
 
 	_, err := db.Collection("filters").InsertMany(ctx, fi)
 	if err != nil {
-		fmt.Println("Error while trying to insert new filters")
+		logger.Error("InsertMany", "Error while trying to insert new filters")
 		panic(err)
 	}
-
-	fmt.Println("Filters successfully updated!")
 }
 
 // FILTERS
 // ? Create filter for each stock
 
 func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) []Filter {
+	logger.Info("CreateMany", "Process started")
+	defer logger.Info("CreateMany", "Process finished")
+
 	var filters []Filter
 	lrt := volume.LastRecordTime(ctx, db)
 

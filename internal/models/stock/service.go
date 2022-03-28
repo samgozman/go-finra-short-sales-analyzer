@@ -2,15 +2,17 @@ package stock
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/volume"
+	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Calculate average volumes for array of Stock instances
 func CalculateAverages(ctx context.Context, db *mongo.Database, stocks *[]Stock) {
+	logger.Info("CalculateAverages", "Process started")
+	defer logger.Info("CalculateAverages", "Process finished")
 	// Get last date from volume service
 	lastRecordTime := volume.LastRecordTime(ctx, db)
 
@@ -89,7 +91,7 @@ func UpdateOne(ctx context.Context, db *mongo.Database, s Stock) {
 	)
 
 	if err != nil {
-		fmt.Printf("Error while updating stock %s\n", s.Ticker)
+		logger.Error("UpdateOne", "Error while updating stock "+s.Ticker)
 		panic(err)
 	}
 }

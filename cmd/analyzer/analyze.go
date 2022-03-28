@@ -7,12 +7,16 @@ import (
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/filter"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/stock"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/mongodb"
+	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Run full analyzer proccess - from averages update to filters creation
 func Run() {
+	logger.Info("Run", "The filter update process has been initiated")
+	defer logger.Info("Run", "The filter update process has been finished")
+
 	dbname := os.Getenv("MONGODB_NAME")
 
 	credential := options.Credential{
