@@ -12,7 +12,6 @@ import (
 // TODO: More error checks
 // TODO: Logger with timestamps
 // TODO: Provide more logging information (log on each stage)
-// TODO: Use "generics" from go 1.18
 // TODO: Add benchmark
 // TODO: Optimize inner functions
 // TODO: Connect as a service for tightshorts

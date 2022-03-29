@@ -65,27 +65,27 @@ func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) 
 			IsNotGarbage: isNotGarbageFilter(lrt, currentLatestRecord, &sv.TotalVolume),
 
 			// TODO: Refactor idea - return number of grow days in a row and compare it with 5
-			ShortVolGrows5D:                isVolumeGrows(&sv.ShortVolume, 5),
-			ShortVolDecreases5D:            isVolumeDecreases(&sv.ShortVolume, 5),
-			ShortVolRatioGrows5D:           isRatioGrows(&sv.ShortRatio, 5),
-			ShortVoRatiolDecreases5D:       isRatioDecreases(&sv.ShortRatio, 5),
-			TotalVolGrows5D:                isVolumeGrows(&sv.TotalVolume, 5),
-			TotalVolDecreases5D:            isVolumeDecreases(&sv.TotalVolume, 5),
-			ShortExemptVolGrows5D:          isVolumeGrows(&sv.ShortExemptVolume, 5),
-			ShortExemptVolDecreases5D:      isVolumeDecreases(&sv.ShortExemptVolume, 5),
-			ShortExemptVolRatioGrows5D:     isRatioGrows(&sv.ExemptRatio, 5),
-			ShortExemptVolRatioDecreases5D: isRatioDecreases(&sv.ExemptRatio, 5),
+			ShortVolGrows5D:                isGrowing(&sv.ShortVolume, 5),
+			ShortVolDecreases5D:            isDeclining(&sv.ShortVolume, 5),
+			ShortVolRatioGrows5D:           isGrowing(&sv.ShortRatio, 5),
+			ShortVoRatiolDecreases5D:       isDeclining(&sv.ShortRatio, 5),
+			TotalVolGrows5D:                isGrowing(&sv.TotalVolume, 5),
+			TotalVolDecreases5D:            isDeclining(&sv.TotalVolume, 5),
+			ShortExemptVolGrows5D:          isGrowing(&sv.ShortExemptVolume, 5),
+			ShortExemptVolDecreases5D:      isDeclining(&sv.ShortExemptVolume, 5),
+			ShortExemptVolRatioGrows5D:     isGrowing(&sv.ExemptRatio, 5),
+			ShortExemptVolRatioDecreases5D: isDeclining(&sv.ExemptRatio, 5),
 
-			ShortVolGrows3D:                isVolumeGrows(&sv.ShortVolume, 3),
-			ShortVolDecreases3D:            isVolumeDecreases(&sv.ShortVolume, 3),
-			ShortVolRatioGrows3D:           isRatioGrows(&sv.ShortRatio, 3),
-			ShortVoRatiolDecreases3D:       isRatioDecreases(&sv.ShortRatio, 3),
-			TotalVolGrows3D:                isVolumeGrows(&sv.TotalVolume, 3),
-			TotalVolDecreases3D:            isVolumeDecreases(&sv.TotalVolume, 3),
-			ShortExemptVolGrows3D:          isVolumeGrows(&sv.ShortExemptVolume, 3),
-			ShortExemptVolDecreases3D:      isVolumeDecreases(&sv.ShortExemptVolume, 3),
-			ShortExemptVolRatioGrows3D:     isRatioGrows(&sv.ExemptRatio, 3),
-			ShortExemptVolRatioDecreases3D: isRatioDecreases(&sv.ExemptRatio, 3),
+			ShortVolGrows3D:                isGrowing(&sv.ShortVolume, 3),
+			ShortVolDecreases3D:            isDeclining(&sv.ShortVolume, 3),
+			ShortVolRatioGrows3D:           isGrowing(&sv.ShortRatio, 3),
+			ShortVoRatiolDecreases3D:       isDeclining(&sv.ShortRatio, 3),
+			TotalVolGrows3D:                isGrowing(&sv.TotalVolume, 3),
+			TotalVolDecreases3D:            isDeclining(&sv.TotalVolume, 3),
+			ShortExemptVolGrows3D:          isGrowing(&sv.ShortExemptVolume, 3),
+			ShortExemptVolDecreases3D:      isDeclining(&sv.ShortExemptVolume, 3),
+			ShortExemptVolRatioGrows3D:     isGrowing(&sv.ExemptRatio, 3),
+			ShortExemptVolRatioDecreases3D: isDeclining(&sv.ExemptRatio, 3),
 
 			AbnormalShortlVolGrows:          isAbnormalGrowth(s.ShortVol20DAVG, s.ShortVolLast),
 			AbnormalShortVolDecreases:       isAbnormaDecline(s.ShortVol20DAVG, s.ShortVolLast),
@@ -126,11 +126,7 @@ func isNotGarbageFilter(lastRecordTime int64, curentRecordTime int64, totalVolum
 	}
 }
 
-// ?: This copy-paste is to make code simpler
-// TODO: find a better way (without 10x nested if-statements)
-// TODO: use generic type (1.18) for volumes
-
-func isVolumeGrows(volumes *[]uint64, daysGrow int) bool {
+func isGrowing[T numeric](volumes *[]T, daysGrow int) bool {
 	if len(*volumes) <= daysGrow {
 		return false
 	}
@@ -145,39 +141,7 @@ func isVolumeGrows(volumes *[]uint64, daysGrow int) bool {
 	return true
 }
 
-func isVolumeDecreases(volumes *[]uint64, daysGrow int) bool {
-	if len(*volumes) <= daysGrow {
-		return false
-	}
-
-	for i := 1; i < daysGrow+1; i++ {
-		isLesserThanPrev := (*volumes)[i] < (*volumes)[i-1]
-		if !isLesserThanPrev {
-			return false
-		}
-	}
-
-	return true
-}
-
-// TODO: Replace with generic type. Move this code to pkg
-func isRatioGrows(volumes *[]float32, daysGrow int) bool {
-	if len(*volumes) <= daysGrow {
-		return false
-	}
-
-	for i := 1; i < daysGrow+1; i++ {
-		isGreaterThanPrev := (*volumes)[i] > (*volumes)[i-1]
-		if !isGreaterThanPrev {
-			return false
-		}
-	}
-
-	return true
-}
-
-// TODO: Replace with generic type. Move this code to pkg
-func isRatioDecreases(volumes *[]float32, daysGrow int) bool {
+func isDeclining[T numeric](volumes *[]T, daysGrow int) bool {
 	if len(*volumes) <= daysGrow {
 		return false
 	}
@@ -212,4 +176,8 @@ func isAbnormaDecline(average float64, current uint64) bool {
 	} else {
 		return false
 	}
+}
+
+type numeric interface {
+	int | int64 | uint | float32 | float64 | uint64
 }
