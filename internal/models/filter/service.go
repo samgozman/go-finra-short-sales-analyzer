@@ -127,11 +127,11 @@ func isNotGarbageFilter(lastRecordTime int64, curentRecordTime int64, totalVolum
 }
 
 func isGrowing[T numeric](volumes *[]T, daysGrow int) bool {
-	if len(*volumes) <= daysGrow {
+	if len(*volumes) < daysGrow {
 		return false
 	}
 
-	for i := 1; i < daysGrow+1; i++ {
+	for i := 1; i < daysGrow; i++ {
 		isGreaterThanPrev := (*volumes)[i] > (*volumes)[i-1]
 		if !isGreaterThanPrev {
 			return false
@@ -142,11 +142,11 @@ func isGrowing[T numeric](volumes *[]T, daysGrow int) bool {
 }
 
 func isDeclining[T numeric](volumes *[]T, daysGrow int) bool {
-	if len(*volumes) <= daysGrow {
+	if len(*volumes) < daysGrow {
 		return false
 	}
 
-	for i := 1; i < daysGrow+1; i++ {
+	for i := 1; i < daysGrow; i++ {
 		isLesserThanPrev := (*volumes)[i] < (*volumes)[i-1]
 		if !isLesserThanPrev {
 			return false
