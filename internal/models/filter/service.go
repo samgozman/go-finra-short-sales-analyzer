@@ -41,12 +41,11 @@ func InsertMany(ctx context.Context, db *mongo.Database, filters *[]Filter) {
 // FILTERS
 // ? Create filter for each stock
 
-func CreateMany(ctx context.Context, db *mongo.Database, stocks *[]stock.Stock) []Filter {
+func CreateMany(ctx context.Context, db *mongo.Database, lrt int64, stocks *[]stock.Stock) []Filter {
 	logger.Info("CreateMany", "Process started")
 	defer logger.Info("CreateMany", "Process finished")
 
 	var filters []Filter
-	lrt := volume.LastRecordTime(ctx, db)
 
 	for _, s := range *stocks {
 		// TODO: Ja-ja, giant N+1

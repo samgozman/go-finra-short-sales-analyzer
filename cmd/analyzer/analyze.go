@@ -6,6 +6,7 @@ import (
 
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/filter"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/stock"
+	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/volume"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/mongodb"
 	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/logger"
 	"go.mongodb.org/mongo-driver/bson"
@@ -42,13 +43,15 @@ func Run() {
 		log.Fatal(err)
 	}
 
-	// ! 2. Calculate averages and save them in stocks array by pointer, update in db
-	stock.CalculateAverages(ctx, database, &stArr)
-	// ! 3. Drop filters collection
+	// ! 2. Get latest DB record time (usefull to check that the volume is not outdated)
+	lrt := volume.LastRecordTime(ctx, database)
+	// ! 3. Calculate averages and save them in stocks array by pointer, update in db
+	stock.CalculateAverages(ctx, database, lrt, &stArr)
+	// ! 4. Drop filters collection
 	filter.Drop(ctx, database)
-	// ! 4. Pass pointer to a stocks to each filter
-	filters := filter.CreateMany(ctx, database, &stArr)
-	// ! 5. Save each filter individually (1 insert transaction for all stocks in 1 filter)
+	// ! 5. Pass pointer to a stocks to each filter
+	filters := filter.CreateMany(ctx, database, lrt, &stArr)
+	// ! 6. Save each filter individually (1 insert transaction for all stocks in 1 filter)
 	filter.InsertMany(ctx, database, &filters)
 
 	// Release resource when the main

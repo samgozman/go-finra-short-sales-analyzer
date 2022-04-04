@@ -10,18 +10,16 @@ import (
 )
 
 // Calculate average volumes for array of Stock instances
-func CalculateAverages(ctx context.Context, db *mongo.Database, stocks *[]Stock) {
+func CalculateAverages(ctx context.Context, db *mongo.Database, lrt int64, stocks *[]Stock) {
 	logger.Info("CalculateAverages", "Process started")
 	defer logger.Info("CalculateAverages", "Process finished")
-	// Get last date from volume service
-	lastRecordTime := volume.LastRecordTime(ctx, db)
 
 	for _, s := range *stocks {
 		v := volume.FindLastVolumes(ctx, db, s.ID, 20)
 		temp := Stock{ID: s.ID, Ticker: s.Ticker}
 
 		// Check that the volume array is exists and stock was traded during last day
-		if len(v) < 1 && v[0].Date.UnixMilli() != lastRecordTime {
+		if len(v) < 1 && v[0].Date.UnixMilli() != lrt {
 			// if it's not - make it blanc
 			s = temp
 			continue
