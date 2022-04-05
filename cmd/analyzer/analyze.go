@@ -56,5 +56,5 @@ func Run() {
 
 	// Release resource when the main
 	// function is returned.
-	defer mongodb.Close(client, ctx, cancel)
+	defer mongodb.Close(ctx, client, cancel)
 }

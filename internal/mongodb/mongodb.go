@@ -8,8 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// This method closes mongoDB connection and cancel context.
-func Close(client *mongo.Client, ctx context.Context,
+// This method closes mongoDB connection and   context.
+func Close(ctx context.Context, client *mongo.Client,
 	cancel context.CancelFunc) {
 
 	// CancelFunc to cancel to context
