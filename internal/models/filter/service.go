@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// Drop filters collection
 func Drop(ctx context.Context, db *mongo.Database) {
 	err := db.Collection("filters").Drop(ctx)
 
@@ -41,6 +42,7 @@ func InsertMany(ctx context.Context, db *mongo.Database, filters *[]Filter) {
 // FILTERS
 // ? Create filter for each stock
 
+// Create many filters objects
 func CreateMany(ctx context.Context, db *mongo.Database, lrt int64, stocks *[]stock.Stock) []Filter {
 	logger.Info("CreateMany", "Process started")
 	defer logger.Info("CreateMany", "Process finished")

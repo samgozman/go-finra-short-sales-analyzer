@@ -60,6 +60,7 @@ func CalculateAverages(ctx context.Context, db *mongo.Database, lrt int64, stock
 	}
 }
 
+// Update stock by id
 func UpdateOne(ctx context.Context, db *mongo.Database, s Stock) {
 	update := bson.M{
 		"$set": bson.M{

@@ -5,10 +5,12 @@ import (
 	"time"
 )
 
+// Log info message
 func Info(serviceName, message string) {
 	printMsg(serviceName, message, "INFO")
 }
 
+// Log error message
 func Error(serviceName, message string) {
 	printMsg(serviceName, message, "ERROR")
 }

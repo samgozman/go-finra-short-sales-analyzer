@@ -27,6 +27,7 @@ func Close(client *mongo.Client, ctx context.Context,
 	}()
 }
 
+// Connect to the mongo database
 func Connect(uri string, auth options.Credential) (*mongo.Client, context.Context,
 	context.CancelFunc, error) {
 
