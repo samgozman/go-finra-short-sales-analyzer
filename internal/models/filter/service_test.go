@@ -3,6 +3,8 @@ package filter
 import (
 	"testing"
 	"time"
+
+	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/tester"
 )
 
 func TestIsNotGarbageFilter(t *testing.T) {
@@ -15,9 +17,7 @@ func TestIsNotGarbageFilter(t *testing.T) {
 		want := true
 		got := isNotGarbageFilter(lrt, crt, &totalVolumes)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with params: lrt '%v', crt '%v', total '%v'", want, got, lrt, crt, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 	t.Run("Should return false if data is inconsistent", func(t *testing.T) {
 		// Params
@@ -28,9 +28,7 @@ func TestIsNotGarbageFilter(t *testing.T) {
 		want := false
 		got := isNotGarbageFilter(lrt, crt, &totalVolumes)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with params: lrt '%v', crt '%v', total '%v'", want, got, lrt, crt, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 	t.Run("Should return false if data is not enough", func(t *testing.T) {
 		// Params
@@ -41,9 +39,7 @@ func TestIsNotGarbageFilter(t *testing.T) {
 		want := false
 		got := isNotGarbageFilter(lrt, crt, &totalVolumes)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with params: lrt '%v', crt '%v', total '%v'", want, got, lrt, crt, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 	t.Run("Should return false if volume is below minimum", func(t *testing.T) {
 		// Params
@@ -54,9 +50,7 @@ func TestIsNotGarbageFilter(t *testing.T) {
 		want := false
 		got := isNotGarbageFilter(lrt, crt, &totalVolumes)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with params: lrt '%v', crt '%v', total '%v'", want, got, lrt, crt, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 	t.Run("Should return false if last record time and current are not equal", func(t *testing.T) {
 		// This checks if passed volumes for the current period refer
@@ -70,9 +64,7 @@ func TestIsNotGarbageFilter(t *testing.T) {
 		want := false
 		got := isNotGarbageFilter(lrt, crt, &totalVolumes)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with params: lrt '%v', crt '%v', total '%v'", want, got, lrt, crt, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 }
 
@@ -83,9 +75,7 @@ func TestIsGrowing(t *testing.T) {
 		want := true
 		got := isGrowing(&totalVolumes, 5)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with total '%v'", want, got, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 	t.Run("Should return false if volumes are not growing", func(t *testing.T) {
 		totalVolumes := []uint64{3000, 2000, 1000, 500, 800}
@@ -93,9 +83,7 @@ func TestIsGrowing(t *testing.T) {
 		want := false
 		got := isGrowing(&totalVolumes, 5)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with total '%v'", want, got, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 	t.Run("Should return false if volumes len are less than 'daysGrow'", func(t *testing.T) {
 		totalVolumes := []uint64{3000, 3001, 3002, 3003}
@@ -103,9 +91,7 @@ func TestIsGrowing(t *testing.T) {
 		want := false
 		got := isGrowing(&totalVolumes, 5)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with total '%v'", want, got, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 }
 
@@ -116,9 +102,7 @@ func TestIsDeclining(t *testing.T) {
 		want := true
 		got := isDeclining(&totalVolumes, 5)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with total '%v'", want, got, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 	t.Run("Should return false if volumes are not declining", func(t *testing.T) {
 		totalVolumes := []uint64{3000, 3001, 3002, 3003, 3005}
@@ -126,9 +110,7 @@ func TestIsDeclining(t *testing.T) {
 		want := false
 		got := isDeclining(&totalVolumes, 5)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with total '%v'", want, got, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 	t.Run("Should return false if volumes len are less than 'daysGrow'", func(t *testing.T) {
 		totalVolumes := []uint64{3000, 2999, 2998, 2997}
@@ -136,9 +118,7 @@ func TestIsDeclining(t *testing.T) {
 		want := false
 		got := isDeclining(&totalVolumes, 5)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with total '%v'", want, got, totalVolumes)
-		}
+		tester.Compare(t, want, got, totalVolumes)
 	})
 }
 
@@ -150,9 +130,7 @@ func TestIsAbnormalGrowth(t *testing.T) {
 		want := true
 		got := isAbnormalGrowth(average, current)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with average '%v' and current '%v", want, got, average, current)
-		}
+		tester.Compare(t, want, got, average, current)
 	})
 	t.Run("Should return false if current volume is not above avg 3 times", func(t *testing.T) {
 		var average float64 = 30.611
@@ -161,9 +139,7 @@ func TestIsAbnormalGrowth(t *testing.T) {
 		want := false
 		got := isAbnormalGrowth(average, current)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with average '%v' and current '%v", want, got, average, current)
-		}
+		tester.Compare(t, want, got, average, current)
 	})
 }
 
@@ -175,9 +151,7 @@ func TestIsAbnormaDecline(t *testing.T) {
 		want := true
 		got := isAbnormaDecline(average, current)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with average '%v' and current '%v", want, got, average, current)
-		}
+		tester.Compare(t, want, got, average, current)
 	})
 	t.Run("Should return false if current volume is not below avg 3 times", func(t *testing.T) {
 		var average float64 = 30.611
@@ -186,8 +160,6 @@ func TestIsAbnormaDecline(t *testing.T) {
 		want := false
 		got := isAbnormaDecline(average, current)
 
-		if want != got {
-			t.Errorf("Expected '%v', but got '%v' with average '%v' and current '%v", want, got, average, current)
-		}
+		tester.Compare(t, want, got, average, current)
 	})
 }

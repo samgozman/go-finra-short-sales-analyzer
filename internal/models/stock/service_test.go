@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/volume"
+	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/tester"
 )
 
 func TestAvgVolume(t *testing.T) {
@@ -23,13 +24,7 @@ func TestAvgVolume(t *testing.T) {
 	got_total, got_short, got_exempt := avgVolume(volumes)
 	var want_total, want_short, want_exempt float64 = 300, 125, 10
 
-	if got_total != want_total {
-		t.Errorf("Expected '%v', but got '%v'", want_total, got_total)
-	}
-	if got_short != want_short {
-		t.Errorf("Expected '%v', but got '%v'", want_short, got_short)
-	}
-	if got_exempt != want_exempt {
-		t.Errorf("Expected '%v', but got '%v'", want_exempt, got_exempt)
-	}
+	tester.Compare(t, want_total, got_total)
+	tester.Compare(t, want_short, got_short)
+	tester.Compare(t, want_exempt, got_exempt)
 }

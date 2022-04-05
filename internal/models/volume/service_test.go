@@ -1,8 +1,9 @@
 package volume
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/tester"
 )
 
 func TestSeparateVolumes(t *testing.T) {
@@ -28,9 +29,7 @@ func TestSeparateVolumes(t *testing.T) {
 		ExemptRatio:       []float32{0.025, 0.0375},
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Expected '%v', but got '%v'", want, got)
-	}
+	tester.StructCompare(t, want, got)
 }
 
 func TestReverse(t *testing.T) {
@@ -61,7 +60,5 @@ func TestReverse(t *testing.T) {
 		},
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Expected '%v', but got '%v'", want, got)
-	}
+	tester.StructCompare(t, want, got)
 }
