@@ -7,8 +7,8 @@ import (
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/filter"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/stock"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/volume"
-	"github.com/samgozman/go-finra-short-sales-analyzer/internal/mongodb"
 	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/logger"
+	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
