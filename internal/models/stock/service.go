@@ -25,32 +25,7 @@ func CalculateAverages(ctx context.Context, db *mongo.Database, lrt int64, stock
 			continue
 		}
 
-		// last day (copy just to be able to sort faster without population)
-		temp.TotalVolLast = v[0].TotalVolume
-		temp.ShortVolLast = v[0].ShortVolume
-		temp.ShortExemptVolLast = v[0].ShortExemptVolume
-		temp.ShortVolRatioLast = float64(v[0].ShortVolume/v[0].TotalVolume) * 100
-		temp.ShortExemptVolRatioLast = float64(v[0].ShortExemptVolume/v[0].TotalVolume) * 100
-
-		// 5 days
-		if len(v) >= 5 {
-			t5, s5, e5 := avgVolume(v[:5])
-			temp.TotalVol5DAVG = t5
-			temp.ShortVol5DAVG = s5
-			temp.ShortExemptVol5DAVG = e5
-			temp.ShortVolRatio5DAVG = (s5 / t5) * 100
-			temp.ShortExemptVolRatio5DAVG = (e5 / t5) * 100
-		}
-
-		// 20 days
-		if len(v) >= 20 {
-			t20, s20, e20 := avgVolume(v)
-			temp.TotalVol20DAVG = t20
-			temp.ShortVol20DAVG = s20
-			temp.ShortExemptVol20DAVG = e20
-			temp.ShortVolRatio20DAVG = (s20 / t20) * 100
-			temp.ShortExemptVolRatio20DAVG = (e20 / t20) * 100
-		}
+		calcStockVolumeAverages(v, &temp)
 
 		// TODO: Find a way to update all stocks with one pack insert (all at the same time)
 		// Update in db
@@ -92,6 +67,36 @@ func UpdateOne(ctx context.Context, db *mongo.Database, s Stock) {
 	if err != nil {
 		logger.Error("UpdateOne", "Error while updating stock "+s.Ticker)
 		panic(err)
+	}
+}
+
+// Calculate groups of averages for a given volume and pass them to the Stock
+func calcStockVolumeAverages(v []volume.Volume, s *Stock) {
+	// last day (copy just to be able to sort faster without population)
+	s.TotalVolLast = v[0].TotalVolume
+	s.ShortVolLast = v[0].ShortVolume
+	s.ShortExemptVolLast = v[0].ShortExemptVolume
+	s.ShortVolRatioLast = float64(v[0].ShortVolume) / float64(v[0].TotalVolume) * 100
+	s.ShortExemptVolRatioLast = float64(v[0].ShortExemptVolume) / float64(v[0].TotalVolume) * 100
+
+	// 5 days
+	if len(v) >= 5 {
+		t5, s5, e5 := avgVolume(v[:5])
+		s.TotalVol5DAVG = t5
+		s.ShortVol5DAVG = s5
+		s.ShortExemptVol5DAVG = e5
+		s.ShortVolRatio5DAVG = (s5 / t5) * 100
+		s.ShortExemptVolRatio5DAVG = (e5 / t5) * 100
+	}
+
+	// 20 days
+	if len(v) >= 20 {
+		t20, s20, e20 := avgVolume(v)
+		s.TotalVol20DAVG = t20
+		s.ShortVol20DAVG = s20
+		s.ShortExemptVol20DAVG = e20
+		s.ShortVolRatio20DAVG = (s20 / t20) * 100
+		s.ShortExemptVolRatio20DAVG = (e20 / t20) * 100
 	}
 }
 
