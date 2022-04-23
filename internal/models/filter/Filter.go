@@ -7,7 +7,6 @@ type Filter struct {
 	ID      primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	StockId primitive.ObjectID `bson:"_stock_id,omitempty" json:"stock_id"`
 
-	OnTinkoff    bool `json:"onTinkoff"`    // Stock is available on Tinkoff broker
 	IsNotGarbage bool `json:"isNotGarbage"` // Filter new stocks with no data or incomplete
 
 	ShortVolGrows5D                bool `json:"shortVolGrows5D"`                // Short volume is growing 5 days in a row

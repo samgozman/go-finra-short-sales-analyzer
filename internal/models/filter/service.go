@@ -62,7 +62,6 @@ func CreateMany(ctx context.Context, db *mongo.Database, lrt int64, stocks *[]st
 			ID:      primitive.NewObjectID(),
 			StockId: s.ID,
 
-			OnTinkoff:    false, // TODO
 			IsNotGarbage: isNotGarbageFilter(lrt, currentLatestRecord, &sv.TotalVolume),
 
 			// TODO: Refactor idea - return number of grow days in a row and compare it with 5
