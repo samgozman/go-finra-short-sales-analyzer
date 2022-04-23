@@ -19,7 +19,7 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/run", runAnalyzerHandler)
-	log.Fatal(http.ListenAndServe(":8000", r))
+	log.Fatal(http.ListenAndServe(":3030", r))
 }
 
 func runAnalyzerHandler(w http.ResponseWriter, r *http.Request) {
