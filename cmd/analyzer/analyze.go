@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/filter"
@@ -35,12 +34,14 @@ func Run() {
 	// ! 1. Get all stocks
 	cursor, err := database.Collection("stocks").Find(ctx, bson.M{})
 	if err != nil {
-		log.Fatal(err)
+		logger.Error("Run", "Error while trying to get all stocks from the collection")
+		panic(err)
 	}
 
 	var stArr []stock.Stock
 	if err = cursor.All(ctx, &stArr); err != nil {
-		log.Fatal(err)
+		logger.Error("Run", "Error while trying to decode each stock item")
+		panic(err)
 	}
 
 	// ! 2. Get latest DB record time (usefull to check that the volume is not outdated)
