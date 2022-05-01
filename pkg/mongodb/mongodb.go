@@ -32,9 +32,9 @@ func Connect(uri string, auth options.Credential) (*mongo.Client, context.Contex
 	context.CancelFunc, error) {
 
 	// ctx will be used to set deadline for process, here
-	// deadline will of 30 seconds.
+	// deadline will of 10 minutes.
 	ctx, cancel := context.WithTimeout(context.Background(),
-		30*time.Second)
+		10*time.Minute)
 
 	// mongo.Connect return mongo.Client method
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri).SetAuth(auth))
