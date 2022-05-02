@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Run full analyzer proccess - from averages update to filters creation
+// Run full analyzer process - from averages update to filters creation
 func Run() {
 	logger.Info("Run", "The filter update process has been initiated")
 	defer logger.Info("Run", "The filter update process has been finished")
@@ -44,7 +44,7 @@ func Run() {
 		panic(err)
 	}
 
-	// ! 2. Get latest DB record time (usefull to check that the volume is not outdated)
+	// ! 2. Get latest DB record time (useful to check that the volume is not outdated)
 	lrt := volume.LastRecordTime(ctx, database)
 	// ! 3. Calculate averages and save them in stocks array by pointer, update in db
 	stock.CalculateAverages(ctx, database, lrt, &stArr)
