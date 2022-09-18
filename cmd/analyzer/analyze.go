@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/filter"
@@ -18,13 +19,15 @@ func Run() {
 	defer logger.Info("Run", "The filter update process has been finished")
 
 	dbname := os.Getenv("MONGODB_NAME")
+	dburl := os.Getenv("MONGODB_URL")
+	dbport := os.Getenv("MONGODB_PORT")
 
 	credential := options.Credential{
 		Username: os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
 		Password: os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),
 	}
 
-	client, ctx, cancel, err := mongodb.Connect("mongodb://mongodb/", credential)
+	client, ctx, cancel, err := mongodb.Connect(fmt.Sprintf("mongodb://%s:%s/", dburl, dbport), credential)
 	if err != nil {
 		panic(err)
 	}
