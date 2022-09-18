@@ -13,7 +13,5 @@ services:
     restart: unless-stopped
     volumes:
       - ./data:/data/db
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     env_file:
       - ./config/.env
