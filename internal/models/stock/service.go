@@ -20,7 +20,7 @@ func CalculateAverages(ctx context.Context, db *mongo.Database, lrt int64, stock
 		temp := Stock{ID: s.ID, Ticker: s.Ticker}
 
 		// Check that the volume array is exists and stock was traded during last day
-		if len(v) < 1 && v[0].Date.UnixMilli() != lrt {
+		if len(v) == 0 || v[0].Date.UnixMilli() != lrt {
 			// if it's not - make it blanc
 			s = temp
 			continue
