@@ -88,11 +88,11 @@ func CreateMany(ctx context.Context, db *mongo.Database, lrt int64, stocks *[]st
 			ShortExemptVolRatioDecreases3D: isDeclining(&sv.ExemptRatio, 3),
 
 			AbnormalShortlVolGrows:          isAbnormalGrowth(s.ShortVol20DAVG, s.ShortVolLast),
-			AbnormalShortVolDecreases:       isAbnormaDecline(s.ShortVol20DAVG, s.ShortVolLast),
+			AbnormalShortVolDecreases:       isAbnormalDecline(s.ShortVol20DAVG, s.ShortVolLast),
 			AbnormalTotalVolGrows:           isAbnormalGrowth(s.TotalVol20DAVG, s.TotalVolLast),
-			AbnormalTotalVolDecreases:       isAbnormaDecline(s.TotalVol20DAVG, s.TotalVolLast),
+			AbnormalTotalVolDecreases:       isAbnormalDecline(s.TotalVol20DAVG, s.TotalVolLast),
 			AbnormalShortExemptVolGrows:     isAbnormalGrowth(s.ShortExemptVol20DAVG, s.ShortExemptVolLast),
-			AbnormalShortExemptVolDecreases: isAbnormaDecline(s.ShortExemptVol20DAVG, s.ShortExemptVolLast),
+			AbnormalShortExemptVolDecreases: isAbnormalDecline(s.ShortExemptVol20DAVG, s.ShortExemptVolLast),
 		}
 
 		filters = append(filters, f)
@@ -101,11 +101,11 @@ func CreateMany(ctx context.Context, db *mongo.Database, lrt int64, stocks *[]st
 	return filters
 }
 
-func isNotGarbageFilter(lastRecordTime int64, curentRecordTime int64, totalVolumes *[]uint64) bool {
+func isNotGarbageFilter(lastRecordTime int64, currentRecordTime int64, totalVolumes *[]uint64) bool {
 	var isConsistent bool = true
 	var averageIsAboveMinimum bool = false
 
-	if len(*totalVolumes) >= 5 && curentRecordTime == lastRecordTime {
+	if len(*totalVolumes) >= 5 && currentRecordTime == lastRecordTime {
 		var total uint64
 
 		for i := 0; i < 5; i++ {
@@ -168,7 +168,7 @@ func isAbnormalGrowth(average float64, current uint64) bool {
 }
 
 // Abnormal volume => more than triple the 20d average
-func isAbnormaDecline(average float64, current uint64) bool {
+func isAbnormalDecline(average float64, current uint64) bool {
 	multiplier := average / float64(current)
 
 	if multiplier >= 3 {

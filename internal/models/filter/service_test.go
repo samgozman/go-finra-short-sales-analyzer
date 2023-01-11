@@ -143,13 +143,13 @@ func TestIsAbnormalGrowth(t *testing.T) {
 	})
 }
 
-func TestIsAbnormaDecline(t *testing.T) {
+func TestIsAbnormalDecline(t *testing.T) {
 	t.Run("Should return true if current volume is below avg 3 times", func(t *testing.T) {
 		var average float64 = 30.611
 		var current uint64 = 5
 
 		want := true
-		got := isAbnormaDecline(average, current)
+		got := isAbnormalDecline(average, current)
 
 		tester.Compare(t, want, got, average, current)
 	})
@@ -158,7 +158,7 @@ func TestIsAbnormaDecline(t *testing.T) {
 		var current uint64 = 21
 
 		want := false
-		got := isAbnormaDecline(average, current)
+		got := isAbnormalDecline(average, current)
 
 		tester.Compare(t, want, got, average, current)
 	})
