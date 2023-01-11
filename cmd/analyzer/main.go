@@ -3,7 +3,10 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/gorilla/mux"
 )
 
@@ -17,6 +20,17 @@ import (
 // TODO: Connect as a service for tightshorts
 
 func main() {
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:              os.Getenv("SENTRY_DSN"),
+		TracesSampleRate: 0.2,
+		SampleRate:       1.0,
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+
+	defer sentry.Flush(2 * time.Second)
+
 	r := mux.NewRouter()
 	r.HandleFunc("/run", runAnalyzerHandler)
 	log.Fatal(http.ListenAndServe(":3030", r))

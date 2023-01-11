@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/filter"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/stock"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/volume"
@@ -29,6 +30,7 @@ func Run() {
 
 	client, ctx, cancel, err := mongodb.Connect(fmt.Sprintf("mongodb://%s:%s/", dburl, dbport), credential)
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 
@@ -38,12 +40,14 @@ func Run() {
 	cursor, err := database.Collection("stocks").Find(ctx, bson.M{})
 	if err != nil {
 		logger.Error("Run", "Error while trying to get all stocks from the collection")
+		sentry.CaptureException(err)
 		panic(err)
 	}
 
 	var stArr []stock.Stock
 	if err = cursor.All(ctx, &stArr); err != nil {
 		logger.Error("Run", "Error while trying to decode each stock item")
+		sentry.CaptureException(err)
 		panic(err)
 	}
 

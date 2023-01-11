@@ -3,6 +3,7 @@ package stock
 import (
 	"context"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/volume"
 	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/logger"
 	"go.mongodb.org/mongo-driver/bson"
@@ -66,6 +67,7 @@ func UpdateOne(ctx context.Context, db *mongo.Database, s Stock) {
 
 	if err != nil {
 		logger.Error("UpdateOne", "Error while updating stock "+s.Ticker)
+		sentry.CaptureException(err)
 		panic(err)
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/getsentry/sentry-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,6 +19,7 @@ func LastRecordTime(ctx context.Context, db *mongo.Database) (m int64) {
 
 	var vol Volume
 	if err := db.Collection("volumes").FindOne(ctx, bson.M{}, findOptions).Decode(&vol); err != nil {
+		sentry.CaptureException(err)
 		log.Fatal(err)
 	}
 
@@ -33,6 +35,7 @@ func FindLastVolumes(ctx context.Context, db *mongo.Database, stockId primitive.
 
 	v, err := db.Collection("volumes").Find(ctx, bson.D{{"_stock_id", stockId}}, findOptions)
 	if err != nil {
+		sentry.CaptureException(err)
 		log.Fatal(err)
 	}
 

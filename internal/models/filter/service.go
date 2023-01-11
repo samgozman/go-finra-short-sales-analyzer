@@ -3,6 +3,7 @@ package filter
 import (
 	"context"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/stock"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/volume"
 	"github.com/samgozman/go-finra-short-sales-analyzer/pkg/logger"
@@ -16,6 +17,7 @@ func Drop(ctx context.Context, db *mongo.Database) {
 
 	if err != nil {
 		logger.Error("Drop", "Error while trying to drop Filters collection")
+		sentry.CaptureException(err)
 		panic(err)
 	}
 }
@@ -35,6 +37,7 @@ func InsertMany(ctx context.Context, db *mongo.Database, filters *[]Filter) {
 	_, err := db.Collection("filters").InsertMany(ctx, fi)
 	if err != nil {
 		logger.Error("InsertMany", "Error while trying to insert new filters")
+		sentry.CaptureException(err)
 		panic(err)
 	}
 }
