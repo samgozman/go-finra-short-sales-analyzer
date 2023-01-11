@@ -21,7 +21,7 @@ import (
 
 func main() {
 	err := sentry.Init(sentry.ClientOptions{
-		Dsn:              os.Getenv("SENTRY_DSN"),
+		Dsn:              os.Getenv("ANALYZER_SENTRY_DSN"),
 		TracesSampleRate: 0.2,
 		SampleRate:       1.0,
 	})
