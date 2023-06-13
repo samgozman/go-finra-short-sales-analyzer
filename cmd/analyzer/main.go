@@ -34,7 +34,6 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/run", runAnalyzerHandler).
-		Methods("POST").
 		Headers("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("ANALYZER_TOKEN")))
 	log.Fatal(http.ListenAndServe(":3030", r))
 }
