@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/samgozman/go-finra-short-sales-analyzer/internal/models/filter"
@@ -28,7 +30,10 @@ func Run() {
 		Password: os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),
 	}
 
-	client, ctx, cancel, err := mongodb.Connect(fmt.Sprintf("mongodb://%s:%s/", dburl, dbport), credential)
+	ctx, cancel := context.WithTimeout(context.Background(), 360*time.Second)
+	defer cancel()
+
+	client, err := mongodb.Connect(ctx, fmt.Sprintf("mongodb://%s:%s/", dburl, dbport), credential)
 	if err != nil {
 		sentry.CaptureException(err)
 		panic(err)
@@ -64,5 +69,5 @@ func Run() {
 
 	// Release resource when the main
 	// function is returned.
-	defer mongodb.Close(ctx, client, cancel)
+	defer mongodb.Close(ctx, client)
 }
